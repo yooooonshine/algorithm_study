@@ -2,7 +2,7 @@ import java.util.Scanner;
 import java.util.*;
 
 public class N1157 {
-    public static void main(String[] args){
+    public static void func(String[] args){
         Scanner sc = new Scanner(System.in);
         String my_string = sc.next();
         my_string = my_string.toUpperCase(); // 대문자로 변환하여 대소문자 구분 안한다.
