@@ -20,6 +20,8 @@ public class N9095 {
             int x = Integer.parseInt(br.readLine());
             System.out.println(intList[x]);
         }
+
+
     }
 
 }
