@@ -1,4 +1,4 @@
-package july_2023;
+package august_2023;
 
 import java.io.BufferedReader;
 import java.io.IOException;
