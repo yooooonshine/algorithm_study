@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        N14002 my_class = new N14002();
+        N1912 my_class = new N1912();
         my_class.func();
     }
 }
