@@ -3,6 +3,7 @@ package august_2023;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class N14002 {
@@ -12,9 +13,13 @@ public class N14002 {
         int[] intList = new int[N];
         int[] DP = new int[N];
         int[][] DPList = new int[N][N];  //결과를 담는 리스트
-        for (int i = 0; i < N; i++) {
-            DP[i] = 1;
-        }
+
+//        for (int i = 0; i < N; i++) {
+//            DP[i] = 1;
+//        }
+        Arrays.fill(DP, 1); // 이게 위보다 훨씬 낫다.
+
+
         //intList[0]은 공백
         StringTokenizer st = new StringTokenizer(br.readLine()); // br.readLine을 통해 읽은 뭍자열을 쪼개주는 객체
         for (int i = 0; i < N; i++) {

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        N1912 my_class = new N1912();
+        N2225 my_class = new N2225();
         my_class.func();
     }
 }
@@ -52,3 +52,6 @@ public class Main {
 //bw.newLine(); // 줄바꿈
 //bw.flush(); // 남아있는 데이터 모두 출력
 //bw.close();
+
+
+//배열 binarySearch, copyOf, copyOfRange, equals, fill, sort 등을 잘 활용하자.
