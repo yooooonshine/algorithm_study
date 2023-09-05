@@ -1,10 +1,10 @@
-package august_2023;
+package september_2023;
 
 import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        N11052 my_class = new N11052();
+        N11726 my_class = new N11726();
         my_class.func();
     }
 }
