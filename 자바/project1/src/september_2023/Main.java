@@ -4,10 +4,11 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        N2677 my_class = new N2677();
+        N4963 my_class = new N4963();
         my_class.func();
     }
 }
+
 
 
 
