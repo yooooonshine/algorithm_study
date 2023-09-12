@@ -3,10 +3,7 @@ package september_2023;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class N1707 {
     private static int V;
@@ -58,6 +55,26 @@ public class N1707 {
         }
         return true;
     }
+    public static void bfs_list(int v, boolean[] visited) {
+        Queue<Integer> queue = new LinkedList<Integer>();
+        visited[v] = true;
+        queue.add(v);
+
+        while(queue.size() != 0) {
+            v = queue.poll();
+            System.out.print(v + " ");
+
+            Iterator<Integer> iter = adj[v].listIterator();
+            while(iter.hasNext()) {
+                int w = iter.next();
+                if(!visited[w]) {
+                    visited[w] = true;
+                    queue.add(w);
+                }
+            }
+        }
+    }
+
 
     public void func() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -81,8 +98,9 @@ public class N1707 {
                 addEdge(vertex1, vertex2); //간선 추가
             }
 
-
-
+            boolean visited[] = new boolean[V + 1]; // 각 노드이 방문 여부를 저장하기 위해
+            int[] colorList = new int[V + 1]; //각 노드의 색 저장
+            bfs_list(1, visited);
             DFS();
         }
     }
