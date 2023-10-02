@@ -30,22 +30,23 @@ public class N1920 {
         }
     }
 
-    public static void binarySearch(int[] NList,int x) {
+    public static int binarySearch2(int key, int low, int high, int[] NList) {
         int mid;
-        int low = 0;
-        int high = NList.length;
-        while (low + 1 < high) {
+
+        while(low <= high) {
             mid = (low + high) / 2;
-            if (NList[mid] == x) {
+
+            if(key == NList[mid]) {
                 System.out.println(1);
-                return;
-            } else if (NList[mid] < x) {
-                low = mid + 1;
-            } else {
+                return mid;
+            } else if(key < NList[mid]) {
                 high = mid - 1;
+            } else {
+                low = mid + 1;
             }
         }
         System.out.println(0);
+        return -1; // 탐색 실패
     }
-
 }
+
