@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        N2470 my_class = new N2470();
+        N2473 my_class = new N2473();
         my_class.func();
     }
 }
