@@ -12,15 +12,15 @@ class Main {
 
 		int index = 0;
 		while (index < A.length) {
-			long min = 1000000001L;
-			int minIndex = index;
+			long max = 0L;
+			int maxIndex = index;
 			for (int i = index; i < A.length; i++) {
-				if (min > A[i]) {
-					min = A[i];
-					minIndex = i;
+				if (max < A[i]) {
+					max = A[i];
+					maxIndex = i;
 				}
 			}
-			swap(A, index, minIndex);
+			swap(A, index, maxIndex);
 			index++;
 		}
 
