@@ -39,19 +39,15 @@ public class Main {
 		System.out.println(count);
 	}
 
-	public static void dfs(List<Integer>[] adj, int start, boolean[] visit) {
+	public static void dfs(List<Integer>[] adj, int node, boolean[] visit) {
+		if (visit[node]) {
+			return;
+		}
+		visit[node] = true;
 
-		Stack<Integer> myStack = new Stack<>();
-
-		myStack.add(start);
-		while (!myStack.isEmpty()) {
-			int node = myStack.pop();
-			if (visit[node] == true) {
-				continue;
-			}
-			visit[node] = true;
-			for (int i = 0; i < adj[node].size(); i++) {
-				myStack.add(adj[node].get(i));
+		for (int i = 0; i < adj[node].size(); i++) {
+			if (!visit[adj[node].get(i)]) {
+				dfs(adj, adj[node].get(i), visit);
 			}
 		}
 	}
