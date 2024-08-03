@@ -2,7 +2,7 @@ package year2024.month7_2024.N12933;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;A
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
