@@ -29,6 +29,7 @@ public class Main {
 		}
 
 		PriorityQueue<Edge> pq = new PriorityQueue<>();
+		boolean[] visit = new boolean[N + 1];
 
 		for (int i = 1; i <= N; i++) {
 			if (count[i] == 0) {
@@ -40,14 +41,16 @@ public class Main {
 			Edge edge = pq.poll();
 			int e = edge.e;
 
+			if (visit[e]) {
+				continue;
+			}
+			visit[e] = true;
+			count[e]--;
+
 			System.out.print(e + " ");
 
 			for (Edge tmp : adj.get(e)) {
-				count[tmp.e]--;
-
-				if (count[tmp.e] == 0) {
-					pq.add(new Edge(tmp.e));
-				}
+				pq.add(tmp);
 			}
 		}
 
