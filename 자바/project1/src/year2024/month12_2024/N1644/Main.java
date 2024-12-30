@@ -35,6 +35,8 @@ public class Main {
 			}
 		}
 
+		mySosu.replaceAll((n) -> n * 2);
+
 		sum = new int[mySosu.size()];
 		for (int i = 1; i < mySosu.size(); i++) {
 			sum[i] = mySosu.get(i) + sum[i - 1];
