@@ -1,7 +1,6 @@
-package year2025.Kakao2020Blind2;
+package year2025.month1.Kakao2020Blind2;
 
 import java.util.*;
-import java.io.*;
 
 class Main {
 	public String solution(String p) {
