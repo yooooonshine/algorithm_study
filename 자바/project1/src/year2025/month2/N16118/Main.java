@@ -4,8 +4,8 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-	public static float[][] wDist;
-	public static float[] aDist;
+	public static int[][] wDist;
+	public static int[] aDist;
 
 	public static List<List<Edge>> adj;
 
@@ -26,22 +26,22 @@ public class Main {
 
 			int s = Integer.parseInt(st.nextToken());
 			int e = Integer.parseInt(st.nextToken());
-			float d = Float.parseFloat(st.nextToken());
+			int d = Integer.parseInt(st.nextToken());
 
-			adj.get(s).add(new Edge(e, d));
-			adj.get(e).add(new Edge(s, d));
+			adj.get(s).add(new Edge(e, d * 2));
+			adj.get(e).add(new Edge(s, d * 2));
 		}
 
-		wDist = new float[N + 1][2];
-		aDist = new float[N + 1];
+		wDist = new int[N + 1][2];
+		aDist = new int[N + 1];
 		for (int i = 1; i <= N; i++) {
-			wDist[i][0] = 10000000000F;
-			wDist[i][1] = 10000000000F;
+			wDist[i][0] = 1000000000;
+			wDist[i][1] = 1000000000;
 		}
 
-		Arrays.fill(aDist, 10000000000F);
-		wDist[1][0] = 0F; // 느린 상태로 도착, 다음 빠름
-		aDist[1] = 0F;
+		Arrays.fill(aDist, 1000000000);
+		wDist[1][0] = 0; // 느린 상태로 도착, 다음 빠름
+		aDist[1] = 0;
 
 		wD();
 		aD();
@@ -56,38 +56,38 @@ public class Main {
 		System.out.println(count);
 	}
 
-	// 늑대 다익스트라
-	// n차원 배열을 사용해야 할 거 같은데
-	// 최단 거리가 아니여도 방문 후 다음 노드를 갱신할 수 있다.
-
-	// 방법으로 모든 경로를 체크?
-
-	// 늑대는 항상  빠름, 느림 세트로 움직인다.
-	//
-
 	public static void wD() {
 		PriorityQueue<Wolf> pq = new PriorityQueue<>();
-		pq.add(new Wolf(1, 0));
+		pq.add(new Wolf(1, 0, true));
 
 		while (!pq.isEmpty()) {
 			Wolf wolf = pq.poll();
 
 			int nE = wolf.e;
+			boolean fast = wolf.fast;
+
+			if (fast) {
+				if (wDist[nE][0] < wolf.d) {
+					continue;
+				}
+			} else {
+				if (wDist[nE][1] < wolf.d) {
+					continue;
+				}
+			}
 
 			for (Edge edge : adj.get(nE)) {
-				if (wDist[nE][0] != 10000000000F) {
-					if (wDist[edge.e][1] > wDist[nE][0] + edge.d / 2F) {
-						wDist[edge.e][1] = wDist[nE][0] + edge.d / 2F;
-						pq.add(new Wolf(edge.e, wDist[edge.e][1]));
+				if (fast) {
+					if (wDist[edge.e][1] > wDist[nE][0] + edge.d / 2) {
+						wDist[edge.e][1] = wDist[nE][0] + edge.d / 2;
+						pq.add(new Wolf(edge.e, wDist[edge.e][1], false));
+					}
+				} else {
+					if (wDist[edge.e][0] > wDist[nE][1] + edge.d * 2) {
+						wDist[edge.e][0] = wDist[nE][1] + edge.d * 2;
+						pq.add(new Wolf(edge.e, wDist[edge.e][0], true));
 					}
 				}
-				if (wDist[nE][1] != 10000000000F) {
-					if (wDist[edge.e][0] > wDist[nE][1] + 2F * edge.d) {
-						wDist[edge.e][0] = wDist[nE][1] + 2F * edge.d;
-						pq.add(new Wolf(edge.e, wDist[edge.e][0]));
-					}
-				}
-
 			}
 		}
 	}
@@ -102,6 +102,10 @@ public class Main {
 
 			int nE = ari.e;
 
+			if (aDist[nE] < ari.d) {
+				continue;
+			}
+
 			for (Edge edge : adj.get(nE)) {
 				if (aDist[edge.e] > aDist[nE] + edge.d) {
 					aDist[edge.e] = aDist[nE] + edge.d;
@@ -113,9 +117,9 @@ public class Main {
 
 	public static class Edge {
 		int e;
-		float d;
+		int d;
 
-		public Edge(int e, float d) {
+		public Edge(int e, int d) {
 			this.e = e;
 			this.d = d;
 		}
@@ -123,31 +127,33 @@ public class Main {
 
 	public static class Wolf implements Comparable<Wolf> {
 		int e;
-		float d;
+		int d;
+		boolean fast;
 
-		public Wolf(int e, float d) {
+		public Wolf(int e, int d, boolean fast) {
 			this.e = e;
 			this.d = d;
+			this.fast = fast;
 		}
 
 		@Override
 		public int compareTo(Wolf wolf) {
-			return (int)(this.d - wolf.d);
+			return (this.d - wolf.d);
 		}
 	}
 
 	public static class Ari implements Comparable<Ari> {
 		int e;
-		float d;
+		int d;
 
-		public Ari(int e, float d) {
+		public Ari(int e, int d) {
 			this.e = e;
 			this.d = d;
 		}
 
 		@Override
 		public int compareTo(Ari ari) {
-			return (int)(this.d - ari.d);
+			return (this.d - ari.d);
 		}
 	}
 }
