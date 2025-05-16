@@ -5,16 +5,12 @@ import java.io.*;
 
 public class Main {
 
-	public static List<List<Node>> adj = new ArrayList<>();
+	public static int[][] adj = new int[52][52];
 	public static List<Node> result;
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
-
-		for (int i = 0; i <= 51; i++) {
-			adj.add(new ArrayList<>());
-		}
 
 		Set<String> set = new HashSet<>();
 
@@ -37,53 +33,44 @@ public class Main {
 			int intS = StringToInt(s);
 			int intE = StringToInt(e);
 
-			adj.get(intS).add(new Node(intS, intE));
+			adj[intS][intE] = 1;
 		}
 
 
 		result = new ArrayList<>();
 
-		for (int n = 0; n <= 51; n++) {
-			dfs(n);
+		for (int m = 0; m < 52; m++) {
+			for (int s = 0; s < 52; s++) {
+				for (int e = 0; e < 52; e++) {
+					if (adj[s][m] == 1 && adj[m][e] == 1) {
+						adj[s][e] = 1;
+					}
+				}
+			}
 		}
 
-		Collections.sort(result);
+		List<String> output = new ArrayList<>();
 
-		System.out.println(result.size());
+		for (int i = 0; i < 52; i++) {
+			for (int j = 0; j < 52; j++) {
+				if (i == j) continue;
+				if (adj[i][j] == 1) {
+					output.add(intToString(i) + " => " + intToString(j));
+				}
+			}
+		}
+
+		Collections.sort(output);
+
+		System.out.println(output.size());
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
-		for (Node node : result) {
-			String a = intToString(node.s);
-			String b = intToString(node.e);
-			bw.write(a + " => " + b + "\n");
+		for (String line : output) {
+			bw.write(line);
+			bw.newLine();
 		}
 		bw.flush();
 	}
 
-	public static void dfs(int s) {
-		Queue<Node> myQ = new LinkedList<>();
-		myQ.add(new Node(s, s));
-
-		boolean[] visit = new boolean[52];
-
-		while(!myQ.isEmpty()) {
-			Node node = myQ.poll();
-			int now = node.e;
-
-			if (visit[now]) {
-				continue;
-			}
-			visit[now] = true;
-
-			for (Node next : adj.get(now)) {
-				if (s != next.e) {
-					result.add(new Node(s, next.e));
-				}
-
-				myQ.add(new Node(now, next.e));
-			}
-		}
-	}
 
 	public static class Node implements Comparable<Node> {
 		int s;
@@ -118,21 +105,19 @@ public class Main {
 	}
 
 	public static int StringToInt(String s) {
-		char tmp = s.toCharArray()[0];
-		if (tmp - 'a' < 26 && tmp - 'a' >= 0) {
-			return tmp - 'a';
+		char tmp = s.charAt(0);
+		if (Character.isUpperCase(tmp)) {
+			return tmp - 'A'; // 0~25
 		} else {
-			return tmp - 'A' + 26; // 26~51
+			return tmp - 'a' + 26; // 26~51
 		}
 	}
 
 	public static String intToString(int i) {
 		if (0 <= i && i < 26) {
-			char tmp  = (char)(i + 'a');
-			return String.valueOf(tmp);
+			return String.valueOf((char)(i + 'A')); // A~Z
 		} else {
-			char tmp = (char)(i - 26 + 'A');
-			return String.valueOf(tmp);
+			return String.valueOf((char)(i - 26 + 'a')); // a~z
 		}
 	}
 }
