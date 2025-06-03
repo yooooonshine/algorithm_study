@@ -6,7 +6,7 @@ import java.io.*;
 public class Main {
 
 	public static List<List<Edge>> adj;
-	public static List<List<Edge>> reverseAdj;
+	public static List<List<Edge>> tmpAdj;
 	public static boolean[] early;
 
 	public static int count;
@@ -17,10 +17,10 @@ public class Main {
 		int N = Integer.parseInt(br.readLine()); // 노드 개수
 
 		adj = new ArrayList<>();
-		reverseAdj = new ArrayList<>();
+		tmpAdj = new ArrayList<>();
 		for (int i = 0; i <= N; i++) {
 			adj.add(new ArrayList<>());
-			reverseAdj.add(new ArrayList<>());
+			tmpAdj.add(new ArrayList<>());
 		}
 
 		for (int n = 1; n <= N - 1; n++) {
@@ -28,71 +28,80 @@ public class Main {
 
 			int s = Integer.parseInt(st.nextToken());
 			int e = Integer.parseInt(st.nextToken());
-			adj.get(s).add(new Edge(s, e));
-			reverseAdj.get(e).add(new Edge(s, e)); // 역방향 그래프도 저장
+			tmpAdj.get(s).add(new Edge(s, e));
+			tmpAdj.get(e).add(new Edge(e, s));
 		}
 
-		// 루트노드 찾기
-		int root = 0;
-		for (int i = 1; i <= N; i++) {
-			if (reverseAdj.get(i).size() == 0) {
-				root = i;
-				break;
+		// dfs로 탐색하면서,트리구조로 변환
+		int root = 1;
+		Stack<Integer> stack = new Stack<>();
+		stack.push(root);
+		boolean[] visited = new boolean[N + 1];
+		while (!stack.isEmpty()) {
+			int now = stack.pop();
+			if (visited[now]) continue; // 이미 방문한 노드면 건너뛰기
+			visited[now] = true;
+
+			for (Edge edge : tmpAdj.get(now)) {
+				if (!visited[edge.e]) {
+					adj.get(now).add(edge); // 트리 구조로 변환
+					stack.push(edge.e);
+				}
 			}
 		}
 
-		count = 0; // 결과 카운트
+
 		early = new boolean[N + 1];
 
-		do {
-			Stack<Edge> myS = new Stack<>();
-			myS.push(new Edge(0, root));
+		result = new int[N + 1][2]; // [노드][0: 얼리 압터, 1: 일반]
+		for (int i = 1; i <= N; i++) {
+			result[i][0] = -1; // 얼리 압터
+			result[i][1] = -1; // 일반
+		}
 
+		System.out.println(Math.min(recursion(root, true), recursion(root, false)));
+	}
 
-			while (!myS.isEmpty()) {
-				Edge nowEdge = myS.pop();
-				int nowS = nowEdge.s;
-				int nowE = nowEdge.e;
+	public static int[][] result;
 
-
-				boolean allEarly = true;
-				for (Edge nextEdge : adj.get(nowE)) {
-
-					// 자식이 리프면
-					if (adj.get(nextEdge.e).size() == 0 && !early[nowE]) {
-						early[nowE] = true;
-						count++;
-					}
-
-					// 자식이 얼리면 패스
-					if (early[nextEdge.e]) {
-						continue;
-					}
-					allEarly = false; // 자식이 얼리 아니면 false
-					myS.add(new Edge(nowE, nextEdge.e));
-				}
-
-				if (allEarly) {
-					if (nowS != 0) {
-						if (early[nowS]) {
-							early[nowE] = true;
-						} else {
-							if (!early[nowE]) {
-								early[nowE] = true;
-								count++;
-							}
-						}
-					} else {
-						// 자식이 모두 얼리고 부모가 없으면 자동얼리
-						early[nowE] = true;
-					}
-				}
+	public static int recursion(int root, boolean early) {
+		if (adj.get(root).size() == 0) {
+			// 리프 노드인 경우
+			if (early) {
+				return 1; // 얼리 압터인 경우
+			} else {
+				return 0; // 일반인 경우
 			}
-		} while (!early[root]);
+		}
 
 
+		int resultInt = 0;
 
-		System.out.println(count);
+		if (early) {
+			if (result[root][0] != -1) {
+				return result[root][0]; // 이미 계산된 값 반환
+			} else {
+				int sum = 1;
+				for (Edge edge : adj.get(root)) {
+					if (edge.e == root) continue; // 자기 자신은 제외
+					sum += Math.min(recursion(edge.e, true), recursion(edge.e, false));
+				}
+				resultInt = sum;
+			}
+		} else {
+			if (result[root][1] != -1) {
+				return result[root][1]; // 이미 계산된 값 반환
+			} else {
+				int sum = 0;
+				for (Edge edge : adj.get(root)) {
+					if (edge.e == root) continue; // 자기 자신은 제외
+					sum += recursion(edge.e, true); // 자식 노드가 얼리 압터인 경우
+				}
+				resultInt = sum;
+			}
+		}
+		result[root][early ? 0 : 1] = resultInt; // 결과 저장
+		return resultInt;
 	}
 
 
