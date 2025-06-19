@@ -15,49 +15,36 @@ public class Main {
 
 		N = Integer.parseInt(br.readLine());
 
-		Map<Integer, List<Integer>> map = new HashMap<>();
-
 		C = new int[N + 1];
 		S = new int[N + 1];
 
-		Set<Integer> colors = new HashSet<>();
+		List<Integer> sizeList = new ArrayList<>();
+		Map<Integer, List<Integer>> map = new HashMap<>();
+
 		for (int n = 1; n <= N; n++) {
 			st = new StringTokenizer(br.readLine());
 
 			int c = Integer.parseInt(st.nextToken()); // 색
 			int s = Integer.parseInt(st.nextToken()); // 크기
-
-			if (!colors.contains(c)) {
-				colors.add(c);
+			sizeList.add(s);
+			if (!map.containsKey(c)) {
 				map.put(c, new ArrayList<>());
 			}
+			map.get(c).add(s);
 
 			C[n] = c;
 			S[n] = s;
 		}
 
-		for (int n = 1; n <= N; n++) {
-			int c = C[n];
-			int s = S[n];
-
-			for (int color : colors) {
-				if (color == c) {
-					continue;
-				}
-				map.get(color).add(s);
-			}
-		}
-
-		for (int i : colors) {
+		Collections.sort(sizeList);
+		for (int i : map.keySet()) {
 			Collections.sort(map.get(i));
 		}
 
-		List<List<Integer>> sum = new ArrayList<>();
-		for (int i = 0; i <= 200000; i++) {
-			sum.add(new ArrayList<>());
-		}
+		Map<Integer, List<Integer>> sum = new HashMap<>();
+		for (int i : map.keySet()) {
+			sum.put(i, new ArrayList<>());
 
-		for (int i : colors) {
 			if (!map.get(i).isEmpty()) {
 				sum.get(i).add(map.get(i).get(0));
 				for (int j = 1; j < map.get(i).size(); j++) {
@@ -66,17 +53,34 @@ public class Main {
 			}
 		}
 
+		List<Integer> totalSum = new ArrayList<>();
+		totalSum.add(sizeList.get(0));
+		for (int i = 1; i < sizeList.size(); i++) {
+			totalSum.add(totalSum.get(i - 1) + sizeList.get(i));
+		}
+
 
 		for (int n = 1; n <= N; n++) {
 			int c = C[n];
 			int s = S[n];
 
+			int totalIndex = binarySearch(sizeList, s);
+			if (totalIndex == -1) {
+				System.out.println(0);
+				continue;
+			}
+			int totalSumValue = totalSum.get(totalIndex);
+
 			int index = binarySearch(map.get(c), s);
 			if (index == -1) {
-				System.out.println(0);
-			} else {
-				System.out.println(sum.get(c).get(index));
+				System.out.println(totalSumValue);
+				continue;
 			}
+			int sumValue = sum.get(c).get(index);
+
+			int result = totalSumValue - sumValue;
+
+			System.out.println(result);
 		}
 	}
 
