@@ -58,16 +58,23 @@ public class Main {
 		Queue<Next> q = new LinkedList<>();
 		boolean[][] visit = new boolean[R + 2][C + 2];
 
-		q.add(new Next(sR, sC, map, visit, 0));
+		q.add(new Next(sR, sC, 0));
 
 		int min = MIN;
+
+		int nowCount = 0;
+
+		String[][] nowMap = rain(map);
 
 		while (!q.isEmpty()) {
 			Next now = q.poll();
 			int nowR = now.r;
 			int nowC = now.c;
-			String[][] nowMap = rain(now.map);
-			boolean[][] nowVisit = copy(now.visit);
+			if (nowCount != now.count) {
+				nowCount = now.count;
+				nowMap = rain(nowMap);
+			}
+
 			int count = now.count;
 
 
@@ -76,10 +83,10 @@ public class Main {
 				break;
 			}
 
-			if (nowVisit[nowR][nowC]) {
+			if (visit[nowR][nowC]) {
 				continue;
 			}
-			nowVisit[nowR][nowC] = true;
+			visit[nowR][nowC] = true;
 
 			for (int i = 0; i <= 3; i++) {
 				int nextR = nowR + rs[i];
@@ -89,24 +96,13 @@ public class Main {
 					continue;
 				}
 
-				if (!nowMap[nextR][nextC].equals("*") && !nowVisit[nextR][nextC]) {
-					q.add(new Next(nextR, nextC, nowMap, nowVisit, count + 1));
+				if (!nowMap[nextR][nextC].equals("*") && !nowMap[nextR][nextC].equals("X") && !visit[nextR][nextC]) {
+					q.add(new Next(nextR, nextC, count + 1));
 				}
 			}
 		}
 
 		return min;
-	}
-
-	public static boolean[][] copy(boolean[][] map) {
-		boolean[][] newMap = new boolean[R + 2][C + 2];
-		for (int r = 1; r <= R; r++) {
-			for (int c = 1; c <= C; c++) {
-				newMap[r][c] = map[r][c];
-			}
-		}
-
-		return newMap;
 	}
 
 	public static String[][] rain(String[][] map) {
@@ -145,16 +141,12 @@ public class Main {
 		int r;
 		int c;
 
-		String[][] map;
-		boolean[][] visit;
 
 		int count;
 
-		public Next(int r, int c, String[][] map, boolean[][] visit, int count) {
+		public Next(int r, int c, int count) {
 			this.r = r;
 			this.c = c;
-			this.map = map;
-			this.visit = visit;
 			this.count = count;
 		}
 	}
