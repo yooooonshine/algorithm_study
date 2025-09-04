@@ -19,50 +19,43 @@ public class Main {
 		Arrays.sort(crains, Collections.reverseOrder());
 
 		int M = Integer.parseInt(br.readLine()); // 박스의 수
-		PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {
-			return b - a;
-		});
+		Integer[] boxes = new Integer[M];
 		st = new StringTokenizer(br.readLine());
 		for (int m = 0; m < M; m++) {
-			pq.add(Integer.parseInt(st.nextToken()));
+			boxes[m] = Integer.parseInt(st.nextToken());
 		}
+
+		Arrays.sort(boxes, Collections.reverseOrder());
 
 		// 만약 박스를 못 옮기면 -1
-		if (crains[0] < pq.peek()) {
+		if (crains[0] < boxes[0]) {
 			System.out.println(-1 + "");
+			return;
 		}
 
-		Stack<Integer> stack = new Stack<>();
+		boolean[] visit = new boolean[M];
+		int moveCount = 0;
+		int result = 0;
 
-		int count = 0;
-		while(true) {
-			count++;
+		while(moveCount < M) {
+			result++;
+			int boxIndex = 0;
 
-
-			int index = 0;
-
-			while (index < N && !pq.isEmpty()) {
-				if (crains[index] >= pq.peek()) {
-					pq.poll();
-					index++;
-				} else {
-					stack.add(pq.poll());
+			for (int n = 0; n < N; n++) {
+				while (boxIndex < M) {
+					if (!visit[boxIndex] && crains[n] >= boxes[boxIndex]) {
+						visit[boxIndex] = true;
+						moveCount++;
+						boxIndex++;
+						break;
+					}
+					boxIndex++;
 				}
 			}
-
-
-			// 잠시 담아뒀던 것 넣기
-			while (!stack.isEmpty()) {
-				pq.add(stack.pop());
-			}
-
-			if (pq.isEmpty()) {
-				break;
-			}
 		}
 
 
-		System.out.println(count);
+		System.out.println(result);
 	}
 }
 
