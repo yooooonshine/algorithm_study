@@ -21,62 +21,26 @@ public class Main {
 
 		Collections.sort(edges);
 
-		// 각 줄의 Set 구하기
-		Map<Integer, Set<Integer>> myM = new HashMap<>();
-		for (Edge e : edges) {
-			myM.put(e.s, new HashSet<>());
-		}
+		int[] dp = new int[N];
+		Arrays.fill(dp, 1);
 
 		for (int i = 0; i < edges.size(); i++) {
-			Edge now = edges.get(i);
+			for (int j = 0; j < i; j++) {
+				if (dp[i] < dp[j] + 1 && edges.get(i).e > edges.get(j).e) {
 
-			for (int j = i + 1; j < edges.size(); j++) {
-				Edge another = edges.get(j);
-				if (now.e > another.e) {
-					myM.get(now.s).add(another.s);
-					myM.get(another.s).add(now.s);
+					dp[i] = dp[j] + 1;
 				}
 			}
 		}
 
-		int count = 0;
-		while (true) {
-			// 모두 set 개수 0인지 확인
-			boolean allZero = true;
-
-			for (Set<Integer> s : myM.values()) {
-				if (s.size() != 0) {
-					allZero = false;
-				}
-
+		int max = 0;
+		for (int i = 0; i < dp.length; i++) {
+			if (max < dp[i]) {
+				max = dp[i];
 			}
-
-			if (allZero) {
-				break;
-			}
-
-			// 줄 자르기
-			count++;
-
-			// 최대 찾기
-			int maxKey = -1;
-			int max = -1;
-			for (int key : myM.keySet()) {
-				if (myM.get(key).size() > max) {
-					max = myM.get(key).size();
-					maxKey = key;
-				}
-			}
-
-			// 해당 줄 자르기
-			Set<Integer> lines = myM.get(maxKey);
-			for (int line : lines) {
-				myM.get(line).remove(maxKey);
-			}
-			myM.get(maxKey).clear();
 		}
 
-		System.out.println(count);
+		System.out.println(N - max);
 	}
 
 	public static class Edge implements Comparable<Edge> {
