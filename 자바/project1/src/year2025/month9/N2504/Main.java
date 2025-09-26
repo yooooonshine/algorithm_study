@@ -21,48 +21,54 @@ public class Main {
 				System.out.println(0);
 				return;
 			} else if (c.equals(")")) {
-				if (stack.peek().equals("(")) {
-					stack.pop();
-
-					stack.add("2");
-				} else {
+				int v = 0;
+				while (!stack.isEmpty() && !stack.peek().equals("(")) {
 					String tmp = stack.pop();
 
-					if (stack.isEmpty() || tmp.equals("(") || tmp.equals(")") || tmp.equals("[") || tmp.equals("]")) {
+					if (tmp.equals("[") || tmp.equals("]")) {
 						System.out.println(0);
 						return;
 					}
 
-					stack.pop();
-					int tmpV = Integer.valueOf(tmp) * 2;
-
-					if (!stack.isEmpty() && !stack.peek().equals("(") && !stack.peek().equals("[")) {
-						tmpV += Integer.valueOf(stack.pop());
-					}
-					stack.add(String.valueOf(tmpV));
+					v += Integer.valueOf(tmp);
 				}
+
+				if (stack.isEmpty() || !stack.peek().equals("(")) {
+					System.out.println(0);
+					return;
+				}
+
+				stack.pop();
+
+				if (v == 0) {
+					v = 1;
+				}
+
+				stack.add(String.valueOf(v * 2));
+
 			} else {
-				if (stack.peek().equals("[")) {
-					stack.pop();
-					stack.add("3");
-				} else {
+				int v = 0;
+				while (!stack.isEmpty() && !stack.peek().equals("[")) {
 					String tmp = stack.pop();
 
-					if (stack.isEmpty() || tmp.equals("(") || tmp.equals(")") || tmp.equals("[") || tmp.equals("]")) {
+					if (tmp.equals("(") || tmp.equals(")")) {
 						System.out.println(0);
 						return;
 					}
 
-					stack.pop();
-
-					int tmpV = Integer.valueOf(tmp) * 3;
-
-					if (!stack.isEmpty() && !stack.peek().equals("(") && !stack.peek().equals("[")) {
-						tmpV += Integer.valueOf(stack.pop());
-					}
-
-					stack.add(String.valueOf(tmpV));
+					v += Integer.valueOf(tmp);
 				}
+
+				if (stack.isEmpty() || !stack.peek().equals("[")) {
+					System.out.println(0);
+					return;
+				}
+				stack.pop();
+
+				if (v == 0) {
+					v = 1;
+				}
+				stack.add(String.valueOf(v * 3));
 			}
 		}
 
