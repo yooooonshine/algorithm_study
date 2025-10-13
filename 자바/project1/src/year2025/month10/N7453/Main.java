@@ -44,40 +44,35 @@ public class Main {
 		}
 		Arrays.sort(a12);
 
-		int count = 0;
+		long count = 0;
 
 
+		// a1, a2 에 대하여 포인트
+		int s1 = 0;
+		int e3 = N * N - 1;
+		while (s1 < N * N && e3 >= 0) {
+			long v1 = a12[s1];
+			long v3 = a34[e3];
 
+			if (v1 + v3 == 0L) {
+				int s1Count = 0;
+				int e3Count = 0;
 
-		for (int i1 = 0; i1 < N; i1++) {
-			for (int i2 = 0; i2 < N; i2++) {
-				int sum = a1[i1] + a2[i2];
-
-				int left = 0;
-				int right = N * N - 1;
-				while (left <= right) {
-					int mid = (left + right) / 2;
-					int v = a34[mid];
-
-					if (v + sum == 0) {
-						int l = mid;
-						int r = mid;
-
-						while (l - 1 >= 0 && a34[l - 1] == v) {
-							l--;
-						}
-						while (r + 1 < N * N && a34[r + 1] == v) {
-							r++;
-						}
-
-						count += (r - l + 1);
-						break;
-					} else if (v + sum < 0) {
-						left = mid + 1;
-					} else {
-						right = mid - 1;
-					}
+				while (s1 < N * N && a12[s1] == v1) {
+					s1++;
+					s1Count++;
 				}
+				while (e3 >= 0 && a34[e3] == v3) {
+					e3--;
+					e3Count++;
+				}
+
+				count += (long) s1Count * (long) e3Count;
+
+			} else if (v1 + v3 < 0L) {
+				s1++;
+			} else {
+				e3--;
 			}
 		}
 
