@@ -5,6 +5,11 @@ import java.io.*;
 
 public class Main {
 
+	public static int[] finalExpense;
+
+	public static int[] expense;
+
+	public static List<List<Edge>> revAdj;
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,12 +20,16 @@ public class Main {
 		for (int n = 0; n <= N; n++) {
 			adj.add(new ArrayList<>());
 		}
-
-		// 진입 차수
-		int[] inDegree = new int[N + 1];
+		revAdj = new ArrayList<>();
+		for (int n = 0; n <= N; n++) {
+			revAdj.add(new ArrayList<>());
+		}
 
 		// 작업 비용
-		int[] expense = new int[N + 1];
+		expense = new int[N + 1];
+
+		finalExpense = new int[N + 1];
+		Arrays.fill(finalExpense, -1);
 
 		// 연관 작업 받기
 		for (int n = 1; n <= N; n++) {
@@ -35,40 +44,41 @@ public class Main {
 				int v = Integer.parseInt(st.nextToken());
 
 				adj.get(v).add(new Edge(n, t));
-				inDegree[n]++;
+				revAdj.get(n).add(new Edge(v, t));
 			}
 		}
 
 		int min = 0;
 
-		Queue<Edge> myQ = new LinkedList<>();
-
 		for (int n = 1; n <= N; n++) {
-			if (inDegree[n] == 0) {
-				myQ.add(new Edge(n, expense[n]));
-			}
-		}
-
-		while (!myQ.isEmpty()) {
-			Edge now = myQ.poll();
-			int nowE = now.e;
-			int t = now.t;
-
-			if (adj.get(nowE).size() == 0) {
-				if (min < t) {
-					min = t;
+			if (adj.get(n).size() == 0) {
+				int totalExpense = getExpense(n);
+				if (min < totalExpense) {
+					min = totalExpense;
 				}
-			}
-
-			for (Edge next : adj.get(nowE)) {
-				inDegree[next.e]--;
-
-
-				myQ.add(new Edge(next.e, t + next.t));
 			}
 		}
 
 		System.out.println(min);
+	}
+
+	public static int getExpense(int v) {
+		if (finalExpense[v] != -1) {
+			return finalExpense[v];
+		}
+
+		int max = 0;
+		for (Edge pre : revAdj.get(v)) {
+			int preE = pre.e;
+			int preExpense = getExpense(preE);
+
+			if (max < preExpense) {
+				max = preExpense;
+			}
+		}
+
+		finalExpense[v] = max + expense[v];
+		return finalExpense[v];
 	}
 
 	public static class Edge {
