@@ -39,38 +39,38 @@ public class Main {
 			adj.get(v2).add(new Edge(v1, c));
 		}
 
-		boolean[] visit = new boolean[N + 1];
-		dfs(visit, A, 0, 0);
+		int[] dist = new int[N + 1];
+		Arrays.fill(dist, Integer.MAX_VALUE);
+		dist[A] = 0;
+		PriorityQueue<Edge2> pq = new PriorityQueue<>();
+		pq.add(new Edge2(A, 0, 0));
 
-		System.out.println(min == 100000000 ? -1 : min);
-	}
+		while (!pq.isEmpty()) {
+			Edge2 now = pq.poll();
+			int nowE = now.e;
+			int nowC = now.c;
 
-	public static void dfs(boolean[] visit, int now, int max, int sum) {
-		if (visit[now]) {
-			return;
-		}
-
-		if (sum > C) {
-			return;
-		}
-
-		if (now == B) {
-			if (max < min) {
-				min = max;
+			if (now.d > C) {
+				continue;
 			}
-			return;
+
+			for (Edge next : adj.get(nowE)) {
+				int nextE = next.e;
+				int nextC = next.c;
+
+				int maxC = Math.max(nowC, nextC);
+				if (dist[nextE] > maxC && now.d + nextC <= C) {
+					dist[nextE] = maxC;
+					pq.add(new Edge2(nextE, maxC, now.d + nextC));
+				}
+			}
 		}
 
-		visit[now] = true;
-
-		for (Edge next : adj.get(now)) {
-			int nextE = next.e;
-			int nextC = next.c;
-
-			dfs(visit, nextE, Math.max(max, nextC), sum + nextC);
+		if (dist[B] == Integer.MAX_VALUE) {
+			System.out.println(-1);
+		} else {
+			System.out.println(dist[B]);
 		}
-
-		visit[now] = false;
 	}
 
 	public static class Edge {
@@ -80,6 +80,23 @@ public class Main {
 		public Edge(int e, int c) {
 			this.e = e;
 			this.c = c;
+		}
+	}
+
+	public static class Edge2 implements Comparable<Edge2> {
+		int e;
+		int c;
+		int d;
+
+		public Edge2(int e, int c, int d) {
+			this.e = e;
+			this.c = c;
+			this.d = d;
+		}
+
+		@Override
+		public int compareTo(Edge2 o) {
+			return this.c - o.c;
 		}
 	}
 }
