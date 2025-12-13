@@ -17,18 +17,22 @@ public class Main {
 			arr[n] = Integer.parseInt(br.readLine());
 		}
 
-		// 삽입 정렬
-		for (int i = 1; i < N; i++) {
-			int key = arr[i];
-			int j = i - 1;
+		// 선택 정렬
+		for (int i = N - 1; i >= 0; i--) {
+			int max = arr[0];
+			int maxIndex = 0;
 
-			while (j >= 0 && arr[j] > key) {
-				arr[j + 1] = arr[j];
-				j = j - 1;
+			for (int j = 1; j <= i; j++) {
+				if (arr[j] > max) {
+					max = arr[j];
+					maxIndex = j;
+				}
 			}
-			arr[j + 1] = key;
-		}
 
+			int temp = arr[i];
+			arr[i] = arr[maxIndex];
+			arr[maxIndex] = temp;
+		}
 
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		for (int n = 0; n < N; n++) {
