@@ -5,8 +5,6 @@ import java.io.*;
 
 public class Main {
 
-	BufferedWriter bw;
-
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -17,8 +15,8 @@ public class Main {
 			arr[n] = Integer.parseInt(br.readLine());
 		}
 
-		// 퀵정렬
-		quickSort(arr, 0, N - 1);
+		// 머지소트
+		mergeSort(arr, 0, N - 1);
 
 
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -28,46 +26,35 @@ public class Main {
 		bw.flush();
 	}
 
-	public static void quickSort(int[] arr, int left, int right) {
-		if (left >= right) {
-			return;
-		}
+	public static void mergeSort(int[] arr, int s, int e) {
+		if (s >= e) return;
 
-		int pivot = partition(arr, left, right);
+		int mid = (s + e) / 2;
+		mergeSort(arr, s, mid);
+		mergeSort(arr, mid + 1, e);
 
-		quickSort(arr, left, pivot - 1);
-		quickSort(arr, pivot + 1, right);
-	}
+		int[] tmp = new int[e - s + 1];
+		int tmpI = 0;
+		int i1 = s;
+		int i2 = mid + 1;
 
-	public static int partition(int[] arr, int left, int right) {
-		int pivot = left;
-
-		int s = left + 1;
-		int e = right;
-
-		while (s <= e) {
-			if (arr[s] < arr[pivot]) {
-				s++;
-			} else if (arr[e] > arr[pivot]) {
-				e--;
+		while (i1 <= mid && i2 <= e) {
+			if (arr[i1] <= arr[i2]) {
+				tmp[tmpI++] = arr[i1++];
 			} else {
-				int temp = arr[s];
-				arr[s] = arr[e];
-				arr[e] = temp;
-				s++;
-				e--;
+				tmp[tmpI++] = arr[i2++];
 			}
 		}
 
-		pivot = e;
-		int tmp = arr[left];
-		for (int i = left; i < pivot; i++) {
-			arr[i] = arr[i + 1];
+		while (i1 <= mid) {
+			tmp[tmpI++] = arr[i1++];
 		}
-		arr[pivot] = tmp;
+		while (i2 <= e) {
+			tmp[tmpI++] = arr[i2++];
+		}
 
-		return pivot;
+		for (int i = 0; i < tmp.length; i++) {
+			arr[s + i] = tmp[i];
+		}
 	}
 }
-
-// 1 3 5 7
