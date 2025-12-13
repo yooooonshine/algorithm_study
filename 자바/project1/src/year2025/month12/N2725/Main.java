@@ -17,28 +17,56 @@ public class Main {
 			arr[n] = Integer.parseInt(br.readLine());
 		}
 
-		// 선택 정렬
-		for (int i = N - 1; i >= 0; i--) {
-			int max = arr[0];
-			int maxIndex = 0;
+		// 퀵정렬
+		quickSort(arr, 0, N - 1);
 
-			for (int j = 1; j <= i; j++) {
-				if (arr[j] > max) {
-					max = arr[j];
-					maxIndex = j;
-				}
-			}
-
-			int temp = arr[i];
-			arr[i] = arr[maxIndex];
-			arr[maxIndex] = temp;
-		}
 
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		for (int n = 0; n < N; n++) {
 			bw.write(arr[n] + "\n");
 		}
 		bw.flush();
+	}
+
+	public static void quickSort(int[] arr, int left, int right) {
+		if (left >= right) {
+			return;
+		}
+
+		int pivot = partition(arr, left, right);
+
+		quickSort(arr, left, pivot - 1);
+		quickSort(arr, pivot + 1, right);
+	}
+
+	public static int partition(int[] arr, int left, int right) {
+		int pivot = left;
+
+		int s = left + 1;
+		int e = right;
+
+		while (s <= e) {
+			if (arr[s] < arr[pivot]) {
+				s++;
+			} else if (arr[e] > arr[pivot]) {
+				e--;
+			} else {
+				int temp = arr[s];
+				arr[s] = arr[e];
+				arr[e] = temp;
+				s++;
+				e--;
+			}
+		}
+
+		pivot = e;
+		int tmp = arr[left];
+		for (int i = left; i < pivot; i++) {
+			arr[i] = arr[i + 1];
+		}
+		arr[pivot] = tmp;
+
+		return pivot;
 	}
 }
 
