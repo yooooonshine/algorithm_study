@@ -17,16 +17,18 @@ public class Main {
 			arr[n] = Integer.parseInt(br.readLine());
 		}
 
-		// 정렬
-		for (int n = N - 2; n >= 0; n--) {
-			for (int s = 0; s <= n; s++) {
-				if (arr[s] > arr[s + 1]) {
-					int tmp = arr[s + 1];
-					arr[s + 1] = arr[s];
-					arr[s] = tmp;
-				}
+		// 삽입 정렬
+		for (int i = 1; i < N; i++) {
+			int key = arr[i];
+			int j = i - 1;
+
+			while (j >= 0 && arr[j] > key) {
+				arr[j + 1] = arr[j];
+				j = j - 1;
 			}
+			arr[j + 1] = key;
 		}
+
 
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		for (int n = 0; n < N; n++) {
@@ -35,3 +37,5 @@ public class Main {
 		bw.flush();
 	}
 }
+
+// 1 3 5 7
